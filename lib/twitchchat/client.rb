@@ -89,21 +89,48 @@ class TwitchChat
       when content.start_with?('!led ')
         match = content.match /!led (?<couleur>.+)/
         puts match[:couleur]
-        led(match[:couleur])
+
+        led(match[:couleur].downcase)
       end
     end
   
     def led(color)
-      states = {
+      colors = {
         "bleu" => {state: "ON", color: { r: 0, g: 0, b: 255}},
         "rouge" => {state: "ON", color: { r: 255, g: 0, b: 0}},
         "vert" => {state: "ON", color: { r: 0, g: 255, b: 0}},
         "rose" => {state: "ON", color: { r: 255, g: 64, b: 64}},
-        "rainbow" => {state: "ON", effect: "Rainbow"}
       }
+
+      effects = {
+        "color waves" => {state: "ON", effect: "Color Waves"},
+        "palette test" => {state: "ON", effect: "Palette Test"},
+        "pride" => {state: "ON", effect: "Pride"},
+        "rainbow with glitter" => {state: "ON", effect: "Rainbow With Glitter"},
+        "confetti" => {state: "ON", effect: "Confetti"},
+        "sinelon" => {state: "ON", effect: "Sinelon"},
+        "juggle" => {state: "ON", effect: "Juggle"},
+        "bpm" => {state: "ON", effect: "BPM"},
+        "fire" => {state: "ON", effect: "Fire"},
+        "solid color" => {state: "ON", effect: "Solid Color"},
+      }
+      text_responses = {
+        "aide" => "Utilisez la commande !led avec une couleur ou un effet pour controller la lampe. Une couleur exadécimale fonctionne aussi. Exemples: !led bleu, !led rainbow, !led #EE4499",
+        "couleurs" => "Les couleurs possibles en ce moment sont #{colors.keys.join(', ')}.",
+        "effets" => "Les effets possibles en ce moment sont #{effects.keys.join(', ')}.",
+      }
+
+      states = effects.merge(colors)
+
       if states[color].present?
         send_mqtt(states[color])
+      elsif text_responses[color].present?
+        send("PRIVMSG #sophiediy :#{text_responses[color]}")
+      elsif color.match? /^#[0-9A-F]+$/i
+        r,g,b = color[1..6].chars.each_slice(2).to_a.map { |a| a.join.to_i(16) }
+        send_mqtt({state: "ON", color: { r: r, g: g, b: b}})
       else
+        
         send("PRIVMSG #sophiediy :#{color} n'existe pas.")
       end
     end
