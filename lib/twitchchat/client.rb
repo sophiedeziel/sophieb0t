@@ -24,7 +24,7 @@ class TwitchChat
     def listen
       connect
 
-      Thread.start do
+      #Thread.start do
         while (running) do
           ready = IO.select([socket])
 
@@ -34,7 +34,7 @@ class TwitchChat
             interpret_line(line)
           end
         end
-      end
+      #end
     end
 
     def connect
@@ -47,7 +47,7 @@ class TwitchChat
       send('CAP REQ :twitch.tv/tags')
       send('CAP REQ :twitch.tv/commands')
       send('JOIN #sophiediy')
-      send('PRIVMSG #sophiediy :Séquence d\'initialisation complète.')
+      #send('PRIVMSG #sophiediy :Séquence d\'initialisation complète.')
     end
 
     def stop
@@ -68,14 +68,14 @@ class TwitchChat
         send('PONG :tmi.twitch.tv')
       end
 
-      match   = line.match(/^.+display-name=(\w+);.+ PRIVMSG #(\w+) :(.+)$/)
+      match   = /^.+display-name=(?<user>\w+);.+ PRIVMSG #(?<channel>\w+) :(?<content>.+)$/.match(line)
 
       if match
-        user    = match[1]
-        channel = match[2]
-        message = match[3]
-
-        #message = Message.create(channel: channel, user: user, message: message, raw: line)
+        user    = match[:user]
+        channel = match[:channel]
+        content = match[:content]
+        
+        message = Message.create(channel: channel, user: user, message: content, raw: line)
       end
     end
   end
