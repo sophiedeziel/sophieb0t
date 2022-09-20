@@ -77,15 +77,15 @@ class TwitchChat
 
         message = Message.create(channel: channel, user: user, message: content, raw: line)
 
-        process_content(content)
+        process_content(content, line)
 
       end
     end
 
-    def process_content(content)
+    def process_content(content, line)
       case
       when content.start_with?('!cheers') # && raw.match(/subscriber=1;/)
-        match = content.match /;color=#(?<couleur>.{6});/
+        match = line.match /;color=#(?<couleur>.{6});/
         send_rgb_color(match[:couleur].downcase)
       when content.start_with?('!led ')
         match = content.match /!led (?<couleur>.+)/
@@ -151,4 +151,3 @@ class TwitchChat
     end
   end
 end
-
