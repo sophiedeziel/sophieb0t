@@ -4,7 +4,7 @@ Requires=network.target
 
 [Service]
 User=pi
-WorkingDirectory=/home/pi/robo-catcher
+WorkingDirectory=/home/pi/sophieb0t
 ExecStart=/home/pi/.rbenv/bin/rbenv exec foreman start
 TimeoutSec=200
 RestartSec=15s
