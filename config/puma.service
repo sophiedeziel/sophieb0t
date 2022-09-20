@@ -1,0 +1,14 @@
+[Unit]
+Description=Rails Server
+Requires=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/robo-catcher
+ExecStart=/home/pi/.rbenv/bin/rbenv exec foreman start
+TimeoutSec=200
+RestartSec=15s
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
