@@ -84,8 +84,9 @@ class TwitchChat
 
     def process_content(content)
       case
-      when content.start_with?('!cheers') && raw.match(/subscriber=1;/)
-
+      when content.start_with?('!cheers') # && raw.match(/subscriber=1;/)
+        match = content.match /;color=#(?<couleur>.{6});/
+        send_rgb_color(match[:couleur].downcase)
       when content.start_with?('!led ')
         match = content.match /!led (?<couleur>.+)/
         puts match[:couleur]
@@ -133,12 +134,16 @@ class TwitchChat
       elsif text_responses[color].present?
         send("PRIVMSG #sophiediy :#{text_responses[color]}")
       elsif color.match? /^#[0-9A-F]+$/i
-        r,g,b = color[1..6].chars.each_slice(2).to_a.map { |a| a.join.to_i(16) }
-        send_mqtt({state: "ON", color: { r: r, g: g, b: b}})
+        send_rgb_color(color)
       else
 
         send("PRIVMSG #sophiediy :#{color} n'existe pas.")
       end
+    end
+
+    def send_rgb_color(color)
+      r,g,b = color[1..6].chars.each_slice(2).to_a.map { |a| a.join.to_i(16) }
+      send_mqtt({state: "ON", color: { r: r, g: g, b: b}})
     end
 
     def send_mqtt(settings)
