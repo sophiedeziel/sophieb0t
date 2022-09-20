@@ -23,9 +23,9 @@ chdir APP_ROOT do
   # end
 
   puts "\n== Symlinking nginx config =="
-  system! 'cp config/nginx.conf /etc/nginx/nginx.conf'
+  system! 'sudo cp config/nginx.conf /etc/nginx/nginx.conf'
   # system! 'chmod 777 /var/lib/motion' # for access to screenshots
-  system! 'service nginx restart'
+  system! 'sudo service nginx restart'
 
   # puts "\n== Changing the pi's network name =="
   # system! 'echo "trash" > /etc/hostname'
@@ -44,7 +44,7 @@ chdir APP_ROOT do
   system! 'bin/rails log:clear tmp:clear RAILS_ENV=production'
 
   puts "\n== Creating the systemd service =="
-  system! 'sudo systemctl link /home/pi/robo-catcher/config/puma.service'
+  system! 'sudo systemctl link /home/pi/sophieb0t/config/puma.service'
   system! 'sudo systemctl daemon-reload'
   system! 'sudo systemctl enable puma.service'
   system! 'sudo systemctl start puma.service'
