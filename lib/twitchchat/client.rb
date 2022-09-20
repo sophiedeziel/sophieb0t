@@ -11,7 +11,7 @@ class TwitchChat
 
     def initialize(auth, logger: nil)
       @auth    = auth
-      @logger  = logger || Logger.new(STDOUT)
+      @logger  = logger || Logger.new('log/twitchchat.log')
       @running = false
       @socket  = nil
     end
