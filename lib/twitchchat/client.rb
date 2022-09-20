@@ -85,7 +85,7 @@ class TwitchChat
     def process_content(content)
       case
       when content.start_with?('!cheers') && raw.match(/subscriber=1;/)
-  
+
       when content.start_with?('!led ')
         match = content.match /!led (?<couleur>.+)/
         puts match[:couleur]
@@ -93,13 +93,19 @@ class TwitchChat
         led(match[:couleur].downcase)
       end
     end
-  
+
     def led(color)
       colors = {
         "bleu" => {state: "ON", color: { r: 0, g: 0, b: 255}},
         "rouge" => {state: "ON", color: { r: 255, g: 0, b: 0}},
+        "jaune" => {state: "ON", color: { r: 255, g: 255, b: 0}},
         "vert" => {state: "ON", color: { r: 0, g: 255, b: 0}},
+        "violet" => {state: "ON", color: { r: 255, g: 0, b: 255}},
+        "orange" => {state: "ON", color: { r: 255, g: 165, b: 0}},
+        "cyan" => {state: "ON", color: { r: 0, g: 255, b: 255}},
+        "blanc" => {state: "ON", color: { r: 255, g: 255, b: 255}},
         "rose" => {state: "ON", color: { r: 255, g: 64, b: 64}},
+        "noir" => {state: "ON", color: { r: 0, g: 0, b: 0}},
       }
 
       effects = {
@@ -130,7 +136,7 @@ class TwitchChat
         r,g,b = color[1..6].chars.each_slice(2).to_a.map { |a| a.join.to_i(16) }
         send_mqtt({state: "ON", color: { r: r, g: g, b: b}})
       else
-        
+
         send("PRIVMSG #sophiediy :#{color} n'existe pas.")
       end
     end
