@@ -147,7 +147,7 @@ class TwitchChat
     end
 
     def send_mqtt(settings)
-      Thread.current[:mqtt_client].publish("lampe_led/5/set", settings.to_json)
+      # Thread.current[:mqtt_client].publish("lampe_led/5/set", settings.to_json)
     end
   end
 end
