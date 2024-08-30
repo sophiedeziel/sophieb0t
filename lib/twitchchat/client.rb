@@ -14,6 +14,7 @@ class TwitchChat
       @logger  = logger || Logger.new('log/twitchchat.log')
       @running = false
       @socket  = nil
+      @trivia = Trivia.new
     end
 
     def send(message)
@@ -23,8 +24,29 @@ class TwitchChat
 
     def listen
       connect
+      @trivia.start
 
-      #Thread.start do
+      sleep 3.seconds
+
+      send("PRIVMSG #sophiediy :" + @trivia.current_question.prompt)
+        Thread.start do
+          while (running) do
+
+
+            if !@trivia.playing?
+
+              if @trivia.last_asked.last_asked_at < 5.seconds.ago
+                @trivia.start
+                send("PRIVMSG #sophiediy :" + @trivia.current_question.prompt)
+              else
+                next_question_in = 1.minute.ago - @trivia.last_asked.last_asked_at
+                logger.info "Waiting for a new question... #{-next_question_in.round} seconds"
+              end
+            end
+            sleep 1.seconds
+          end
+        end
+        # $stdout.sync = true
         while (running) do
           ready = IO.select([socket])
 
@@ -34,7 +56,7 @@ class TwitchChat
             interpret_line(line)
           end
         end
-      #end
+      # end
     end
 
     def connect
@@ -77,21 +99,29 @@ class TwitchChat
 
         message = Message.create(channel: channel, user: user, message: content, raw: line)
 
-        process_content(content, line)
+        process_content(message)
 
       end
     end
 
-    def process_content(content, line)
+    def process_content(message)
       case
-      when content.start_with?('!cheers') # && raw.match(/subscriber=1;/)
-        match = line.match /;color=#(?<couleur>.{6});/
+      when message.message.start_with?('!cheers') # && raw.match(/subscriber=1;/)
+        match = message.message.match /;color=#(?<couleur>.{6});/
         send_rgb_color(match[:couleur].downcase)
-      when content.start_with?('!led ')
-        match = content.match /!led (?<couleur>.+)/
+      when message.message.start_with?('!led ')
+        match = message.message.match /!led (?<couleur>.+)/
         puts match[:couleur]
 
         led(match[:couleur].downcase)
+      else
+        if @trivia.playing?
+          if @trivia.check_answer(message.message, player: message.user)
+            send("PRIVMSG #sophiediy :#{message.user} a trouvé la bonne réponse!")
+          else
+            logger.info "Mauvaise réponse de #{message.user}: #{message.message}"
+          end
+        end
       end
     end
 

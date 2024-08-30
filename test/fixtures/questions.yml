@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  prompt: MyString
+  answer: MyString
+  last_asked_at: 2024-08-29 19:55:00
+
+two:
+  prompt: MyString
+  answer: MyString
+  last_asked_at: 2024-08-29 19:55:00

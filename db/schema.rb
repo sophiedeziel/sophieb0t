@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_02_17_013308) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_29_235500) do
   create_table "messages", force: :cascade do |t|
     t.string "channel"
     t.string "user"
     t.text "message"
     t.text "raw"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "questions", force: :cascade do |t|
+    t.string "prompt"
+    t.string "answer"
+    t.datetime "last_asked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
