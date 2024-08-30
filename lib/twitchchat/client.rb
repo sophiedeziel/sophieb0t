@@ -31,10 +31,7 @@ class TwitchChat
       send("PRIVMSG #sophiediy :" + @trivia.current_question.prompt)
         Thread.start do
           while (running) do
-
-
             if !@trivia.playing?
-
               if @trivia.last_asked.last_asked_at < 5.seconds.ago
                 @trivia.start
                 send("PRIVMSG #sophiediy :" + @trivia.current_question.prompt)
@@ -117,7 +114,7 @@ class TwitchChat
       else
         if @trivia.playing?
           if @trivia.check_answer(message.message, player: message.user)
-            send("PRIVMSG #sophiediy :#{message.user} a trouvé la bonne réponse!")
+            send("PRIVMSG #sophiediy :Bonne réponse! #{message.user} gagne un point et a maintenant #{Point.where(user: message.user).sum(:points)} points.")
           else
             logger.info "Mauvaise réponse de #{message.user}: #{message.message}"
           end

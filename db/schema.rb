@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_29_235500) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_30_011332) do
   create_table "messages", force: :cascade do |t|
     t.string "channel"
     t.string "user"
@@ -18,6 +18,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_29_235500) do
     t.text "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "points", force: :cascade do |t|
+    t.string "user"
+    t.integer "points"
+    t.integer "question_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_points_on_question_id"
+    t.index ["user"], name: "index_points_on_user"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -28,4 +38,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_29_235500) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "points", "questions"
 end

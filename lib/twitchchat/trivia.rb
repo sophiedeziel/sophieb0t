@@ -17,9 +17,10 @@ class TwitchChat
       @current_question = nil
     end
 
-    def check_answer(answer, player)
+    def check_answer(answer, player:)
       return unless playing?
       if answer.downcase == current_question.answer.downcase
+        Point.create(user: player, question: current_question, points: 1)
         stop
         return true
       end
