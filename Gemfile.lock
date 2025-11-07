@@ -139,7 +139,8 @@ GEM
     method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.25.5)
-    mqtt (0.6.0)
+    mqtt (0.7.0)
+      logger
     msgpack (1.7.2)
     mutex_m (0.3.0)
     net-imap (0.5.9)
